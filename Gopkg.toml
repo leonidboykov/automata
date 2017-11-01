@@ -1,0 +1,7 @@
+[[constraint]]
+  name = "github.com/caarlos0/env"
+  version = "3.1.1"
+
+[[constraint]]
+  branch = "master"
+  name = "github.com/yuin/gopher-lua"
