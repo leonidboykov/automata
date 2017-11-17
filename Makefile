@@ -12,7 +12,7 @@ vendor: ## Install deps and sync vendored dependencies
 	@${GOEXE} get -u github.com/golang/dep/cmd/dep
 	@dep ensure
 
-build: vendor ## Build automata binary
+build: ## Build automata binary
 	@echo "Building automata binary"
 	@CGO_ENABLED=0 GOOS=linux ${GOEXE} build -a -installsuffix cgo ${PACKAGE}
 

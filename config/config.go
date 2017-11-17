@@ -8,7 +8,7 @@ import (
 
 // Config ...
 type Config struct {
-	BotToken string `env:"AUTOMATA_BOT_TOKEN"`
+	BotToken string `env:"AUTOMATA_TOKEN"`
 }
 
 // Parse ...
