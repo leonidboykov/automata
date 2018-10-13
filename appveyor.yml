@@ -1,22 +1,19 @@
 version: 1.0.{build}
 platform: x64
 
-build:
-  verbosity: minimal
+build: off
+
+skip_tags: true
+
+clone_folder: c:\gopath\src\github\smarthut\automata
+
+# environment:
+#   GOPATH: c:\gopath
+#   GO111MODULE: on
 
 init:
-  - copy c:\MinGW\bin\mingw32-make.exe c:\MinGW\bin\make.exe
-  - set PATH=%PATH%;C:\MinGW\bin;%GOPATH%\bin
-  - go version
-  - go env
+  - ps: go version
 
-clone_folder: c:\gopath\src\github.com\smarthut\automata
-
-environment:
-  GOPATH: c:\gopath
-
-install:
-  - make vendor
 
 build_script:
-  - make build
+  - go test ./...

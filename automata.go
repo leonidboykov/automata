@@ -2,47 +2,71 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
 	"github.com/cjoudrey/gluahttp"
 	"github.com/yuin/gopher-lua"
-	json "layeh.com/gopher-json"
+	luajson "layeh.com/gopher-json"
 
 	"github.com/smarthut/automata/module"
 )
 
+// TODO: add this to env config
+const (
+	defaultHost = ""
+	defaultPort = 8080
+	pollingTime = 5 * time.Minute
+)
+
+var (
+	version = "master"
+	commit  = "none"
+	date    = "unknown"
+)
+
 func main() {
-	L := lua.NewState()
+	L := lua.NewState(lua.Options{SkipOpenLibs: true})
+	lua.OpenBase(L)
 	defer L.Close()
 
 	L.PreloadModule("http", gluahttp.NewHttpModule(&http.Client{}).Loader)
-	L.PreloadModule("json", json.Loader)
+	L.PreloadModule("json", luajson.Loader)
 	L.PreloadModule("automata", module.Loader)
 
 	// setting base path for scripts
 	if err := L.DoString(`package.path = [[scripts/?.lua;]] .. package.path`); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	if err := L.DoFile("scripts/main.lua"); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
 	if err := L.CallByParam(lua.P{
 		Fn:      L.GetGlobal("start"), // name of Lua function
 		Protect: true,                 // return err or panic
 	}); err != nil {
-		fmt.Println(err)
+		log.Println(err)
 	}
 
+	go startPolling(L, pollingTime)
+
+	api := NewAPI()
+	l := fmt.Sprintf("%s:%d", defaultHost, defaultPort)
+	log.Printf("Starting SmartHut Automata %s on %s\n", version, l)
+	api.Start(l)
+}
+
+func startPolling(L *lua.LState, t time.Duration) {
 	for {
 		if err := L.CallByParam(lua.P{
 			Fn:      L.GetGlobal("update"), // name of Lua function
 			Protect: true,                  // return err or panic
 		}); err != nil {
-			fmt.Println(err)
+			log.Println(err)
 		}
-		<-time.After(20 * time.Second) // edit this
+		<-time.After(t)
 	}
 }
