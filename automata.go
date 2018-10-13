@@ -27,8 +27,8 @@ var (
 )
 
 func main() {
-	L := lua.NewState(lua.Options{SkipOpenLibs: true})
-	lua.OpenBase(L)
+	L := lua.NewState(lua.Options{SkipOpenLibs: false})
+	// lua.OpenBase(L)
 	defer L.Close()
 
 	L.PreloadModule("http", gluahttp.NewHttpModule(&http.Client{}).Loader)
