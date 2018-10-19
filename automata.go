@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/cjoudrey/gluahttp"
@@ -26,7 +27,13 @@ var (
 	date    = "unknown"
 )
 
+var scriptsPath = "scripts"
+
 func main() {
+	if os.Getenv("AUTOMATA_SCRIPTS_PATH") != "" {
+		scriptsPath = os.Getenv("AUTOMATA_SCRIPTS_PATH")
+	}
+
 	L := lua.NewState(lua.Options{SkipOpenLibs: false})
 	// lua.OpenBase(L)
 	defer L.Close()
@@ -36,11 +43,11 @@ func main() {
 	L.PreloadModule("automata", module.Loader)
 
 	// setting base path for scripts
-	if err := L.DoString(`package.path = [[scripts/?.lua;]] .. package.path`); err != nil {
+	if err := L.DoString(`package.path = [[` + scriptsPath + `/?.lua;]] .. package.path`); err != nil {
 		log.Println(err)
 	}
 
-	if err := L.DoFile("scripts/main.lua"); err != nil {
+	if err := L.DoFile(scriptsPath + "/main.lua"); err != nil {
 		log.Println(err)
 	}
 
