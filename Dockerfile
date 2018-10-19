@@ -1,4 +1,5 @@
 FROM golang:1.11 as builder
+ENV CGO_ENABLED=0
 ENV GO111MODULE="on"
 WORKDIR /go/src/github.com/smarthut/automata
 COPY . .
