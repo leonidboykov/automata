@@ -6,7 +6,8 @@ RUN go build .
 
 FROM alpine:latest
 RUN apk --no-cache add tzdata zip ca-certificates
-COPY --from=builder /go/src/github.com/smarthut/automata/automata /
+COPY --from=builder /go/src/github.com/smarthut/automata/automata /usr/local/bin/
 EXPOSE 8080
 VOLUME ["/scripts"]
-ENTRYPOINT ["/automata"]
+ENTRYPOINT ["/bin/sh", "-c"]
+CMD ["automata"]
