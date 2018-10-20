@@ -32,6 +32,14 @@ func NewAPI() *API {
 		r.Get("/state", func(w http.ResponseWriter, r *http.Request) {
 			render.JSON(w, r, api)
 		})
+		r.Get("/enable", func(w http.ResponseWriter, r *http.Request) {
+			api.ScriptEnabled = true
+			render.JSON(w, r, api)
+		})
+		r.Get("/disable", func(w http.ResponseWriter, r *http.Request) {
+			api.ScriptEnabled = false
+			render.JSON(w, r, api)
+		})
 		r.Post("/state", func(w http.ResponseWriter, r *http.Request) {
 			var s state
 			if err := render.DecodeJSON(r.Body, &s); err != nil {
