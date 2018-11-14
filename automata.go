@@ -60,7 +60,7 @@ func main() {
 
 	go startPolling(L, pollingTime)
 
-	api := NewAPI()
+	api := NewAPI(L)
 	l := fmt.Sprintf("%s:%d", defaultHost, defaultPort)
 	log.Printf("Starting SmartHut Automata %s on %s\n", version, l)
 	api.Start(l)
