@@ -25,7 +25,8 @@ type state struct {
 // NewAPI instantiates a new REST API
 func NewAPI(L *lua.LState) *API {
 	api := &API{
-		ScriptEnabled: false,
+		// TODO: add `RUN_SCRIPT_AT_LOAD` env config
+		ScriptEnabled: true,
 		luaState:      L,
 	}
 
