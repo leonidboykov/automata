@@ -21,6 +21,10 @@ func inTimeSpan(L *lua.LState) int {
 		fmt.Println(err)
 		return -1
 	}
+	
+	if start.After(end) {
+		start, end = end, start
+	}
 
 	check, err := time.Parse(timeLayout, L.ToString(3))
 	if err != nil {
